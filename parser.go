@@ -30,7 +30,7 @@ type MoveData struct {
 func main() {
 
 	//open pgn file
-    chessFile, err := os.Open("twic210-874.pgn")
+    chessFile, err := os.Open("INSERT PGN FILE HERE")
 	if err != nil {
 		panic(err)
 	}
