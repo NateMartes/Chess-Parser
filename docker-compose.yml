@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: MYSQL-Container
+    environment:
+      MYSQL_ROOT_PASSWORD: CS235
+      MYSQL_DATABASE: chess
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./chess.sql:/docker-entrypoint-initdb.d/chess.sql
+    healthcheck:  # Health check to wait for MySQL to be ready
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$MYSQL_ROOT_PASSWORD || exit 1"]
+      interval: 10s
+      retries: 5
+
+  go-app:
+    build: .
+    container_name: CS235-NateM-PGN-Paser
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    environment:
+      - GO_ENV=development
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=CS235
+      - DB_NAME=chess
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+
+
